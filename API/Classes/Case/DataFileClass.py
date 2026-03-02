@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd
 import traceback
 import json, shutil, os, time, subprocess
+import logging
 from collections import defaultdict
 from itertools import product
 
@@ -9,6 +10,9 @@ from Classes.Base import Config
 from Classes.Case.OsemosysClass import Osemosys
 from Classes.Base.FileClass import File
 from Classes.Base.CustomThreadClass import CustomThread
+
+logger = logging.getLogger(__name__)
+
 class DataFile(Osemosys):
     # def __init__(self, case):
     #     Osemosys.__init__(self, case)
@@ -983,7 +987,7 @@ class DataFile(Osemosys):
                         elif os.path.isdir(file_path):
                             shutil.rmtree(file_path)
                     except Exception as e:
-                        print(f"Greška pri brisanju {file_path}: {e}")
+                        logger.warning("Failed to delete %s: %s", file_path, e)
 
             for filename in os.listdir( self.viewFolderPath):
                 if filename !='resData.json':
@@ -994,7 +998,7 @@ class DataFile(Osemosys):
                         elif os.path.isdir(file_path):
                             shutil.rmtree(file_path)
                     except Exception as e:
-                        print(f"Greška pri brisanju {file_path}: {e}")
+                        logger.warning("Failed to delete %s: %s", file_path, e)
 
             #sad moramo napraviti defualt definitions file
             viewDefPath = Path(self.viewFolderPath, 'viewDefinitions.json')
@@ -1424,38 +1428,38 @@ class DataFile(Osemosys):
             ########################################################################################### C H E C K S ###############################################################################
 
             ########################################################################################### C H E C K 1
-            print("CHECK 1. Identifying technologies where Discount Rate idv is different from global Discount Rate  for (r, t)")
+            logger.info("CHECK 1. Identifying technologies where Discount Rate idv is different from global Discount Rate  for (r, t)")
             msg+="CHECK 1. Identifying technologies where Discount Rate idv is different from global Discount Rate  for (r, t)\n"
             df_check1 = df_merge1[
                 (df_merge1['DiscountRateIdv'] != df_merge1['DiscountRate'])
             ]
             if not df_check1.empty:
-                print("CHECK 1: Error")
-                print(df_check1)
+                logger.warning("CHECK 1: Error")
+                logger.warning(df_check1.to_string())
                 msg+="<i class='fa fa-exclamation-triangle danger' aria-hidden='true'></i>CHECK 1: Error\n"
                 msg+=df_check1.to_string()
                 msg+="\n\n"
             else:
-                print("CHECK 1: Success")
+                logger.info("CHECK 1: Success")
                 msg+="<i class='fa fa-check-square-o success' aria-hidden='true'></i>CHECK 1: Success\n\n"
 
             ########################################################################################### C H E C K 2
-            print("CHECK 2. Check if YearSplits sums to 1 for y in YEAR")
+            logger.info("CHECK 2. Check if YearSplits sums to 1 for y in YEAR")
             msg+="CHECK 2. Check if YearSplits sums to 1 for y in YEAR\n"
             df_YS = df_YS.groupby(['r','y'])['YearSplit'].sum().reset_index()
             df_check2 = df_YS[(df_YS["YearSplit"] != 1)]
             if not df_check2.empty:
-                print("CHECK 2: Error")
-                print(df_check2)
+                logger.warning("CHECK 2: Error")
+                logger.warning(df_check2.to_string())
                 msg+="<i class='fa fa-exclamation-triangle danger' aria-hidden='true'></i>CHECK 2: Error\n"
                 msg+=df_check2.to_string()
                 msg+="\n\n"
             else:
-                print("CHECK 2: Success")
+                logger.info("CHECK 2: Success")
                 msg+="<i class='fa fa-check-square-o success' aria-hidden='true'></i>CHECK 2: Success\n\n"
 
             ########################################################################################### C H E C K 3
-            print("CHECK 3. Checking if MinCapacityInvestment bounds are greater the MaxCapacityInvestment bounds for (r, t, y)")
+            logger.info("CHECK 3. Checking if MinCapacityInvestment bounds are greater the MaxCapacityInvestment bounds for (r, t, y)")
             msg+="CHECK 3. Checking if MinCapacityInvestment bounds are greater the MaxCapacityInvestment bounds for (r, t, y)\n"
             df_check3 = df_merge3[
                 (df_merge3['TotalAnnualMaxCapacityInvestment'] != -1) &
@@ -1463,17 +1467,17 @@ class DataFile(Osemosys):
                 (df_merge3['TotalAnnualMaxCapacityInvestment'] < df_merge3['TotalAnnualMinCapacityInvestment'])
             ]
             if not df_check3.empty:
-                print("CHECK 3: Error")
-                print(df_check3)
+                logger.warning("CHECK 3: Error")
+                logger.warning(df_check3.to_string())
                 msg+="<i class='fa fa-exclamation-triangle danger' aria-hidden='true'></i>CHECK 3: Error\n"
                 msg+=df_check3.to_string()
                 msg+="\n\n"
             else:
-                print("CHECK 3: Success")
+                logger.info("CHECK 3: Success")
                 msg+="<i class='fa fa-check-square-o success' aria-hidden='true'></i>CHECK 3: Success\n\n"
 
             ########################################################################################### C H E C K 4
-            print("CHECK 4. Checking if TotalTechnologyAnnualActivityLowerLimit bounds are greater than TotalTechnologyAnnualActivityUpperLimit bounds for (r, t, y)")
+            logger.info("CHECK 4. Checking if TotalTechnologyAnnualActivityLowerLimit bounds are greater than TotalTechnologyAnnualActivityUpperLimit bounds for (r, t, y)")
             msg+="CHECK 4. Checking if TotalTechnologyAnnualActivityLowerLimit bounds are greater than TotalTechnologyAnnualActivityUpperLimit bounds for (r, t, y)\n"
             df_check4 = df_merge4[
                 (df_merge4['TotalTechnologyAnnualActivityUpperLimit'] != -1) &
@@ -1481,17 +1485,17 @@ class DataFile(Osemosys):
                 (df_merge4['TotalTechnologyAnnualActivityUpperLimit'] < df_merge4['TotalTechnologyAnnualActivityLowerLimit'])
             ]
             if not df_check4.empty:
-                print("CHECK 4: Error")
-                print(df_check4)
+                logger.warning("CHECK 4: Error")
+                logger.warning(df_check4.to_string())
                 msg+="<i class='fa fa-exclamation-triangle danger' aria-hidden='true'></i>CHECK 4: Error\n"
                 msg+=df_check4.to_string()
                 msg+="\n\n"
             else:
-                print("CHECK 4: Success")
+                logger.info("CHECK 4: Success")
                 msg+="<i class='fa fa-check-square-o success' aria-hidden='true'></i>CHECK 4: Success\n\n"
 
             ########################################################################################### C H E C K 5
-            print("CHECK 5. Checking if ResidualCapacity is greater than TotalAnnualMaxCapacity for (r, t, y)")
+            logger.info("CHECK 5. Checking if ResidualCapacity is greater than TotalAnnualMaxCapacity for (r, t, y)")
             msg+="CHECK 5. Checking if ResidualCapacity is greater than TotalAnnualMaxCapacity for (r, t, y)\n"
             df_check5 = df_merge5[
                 (df_merge5['TotalAnnualMaxCapacity'] != -1) & 
@@ -1499,17 +1503,17 @@ class DataFile(Osemosys):
                 (df_merge5['TotalAnnualMaxCapacity'] < df_merge5['ResidualCapacity'])
                 ]
             if not df_check5.empty:
-                print("CHECK 5: Error")
-                print(df_check5)
+                logger.warning("CHECK 5: Error")
+                logger.warning(df_check5.to_string())
                 msg+="<i class='fa fa-exclamation-triangle danger' aria-hidden='true'></i>CHECK 5: Error\n"
                 msg+=df_check5.to_string()
                 msg+="\n\n"
             else:
-                print("CHECK 5: Success")
+                logger.info("CHECK 5: Success")
                 msg+="<i class='fa fa-check-square-o success' aria-hidden='true'></i>CHECK 5: Success\n\n"
 
             ########################################################################################### C H E C K 6
-            print("CHECK 6. Checking if ResidualCapacity plus TotalAnnualMinCapacityInvestment is greater than TotalAnnualMaxCapacity for (r, t, y)")
+            logger.info("CHECK 6. Checking if ResidualCapacity plus TotalAnnualMinCapacityInvestment is greater than TotalAnnualMaxCapacity for (r, t, y)")
             msg+="CHECK 6. Checking if ResidualCapacity plus TotalAnnualMinCapacityInvestment is greater than TotalAnnualMaxCapacity for (r, t, y)\n"
             df_check6 = df_merge6[
                 (df_merge6['TotalAnnualMaxCapacity'] != -1) &
@@ -1517,17 +1521,17 @@ class DataFile(Osemosys):
                 (df_merge6['TotalAnnualMaxCapacity'] < df_merge6['ResidualCapacity'] + df_merge6['TotalAnnualMinCapacityInvestment'])
             ]
             if not df_check6.empty:
-                print("CHECK 6: Error")
-                print(df_check6)
+                logger.warning("CHECK 6: Error")
+                logger.warning(df_check6.to_string())
                 msg+="<i class='fa fa-exclamation-triangle danger' aria-hidden='true'></i>CHECK 6: Error\n"
                 msg+=df_check6.to_string()
                 msg+="\n\n"
             else:
-                print("CHECK 6: Success")
+                logger.info("CHECK 6: Success")
                 msg+="<i class='fa fa-check-square-o success' aria-hidden='true'></i>CHECK 6: Success\n\n"
 
             ########################################################################################### C H E C K 7
-            print("CHECK 7. Checking if there is sufficient available capacity to meet TotalTechnologyAnnualActivityLowerLimit for (r, t, y)")
+            logger.info("CHECK 7. Checking if there is sufficient available capacity to meet TotalTechnologyAnnualActivityLowerLimit for (r, t, y)")
             msg+="CHECK 7. Checking if there is sufficient available capacity to meet TotalTechnologyAnnualActivityLowerLimit for (r, t, y)\n"
             df_check7 = df_merge7[
                 (df_merge7['TotalAnnualMaxCapacity'] != 0) &
@@ -1538,50 +1542,50 @@ class DataFile(Osemosys):
                 (df_merge7['Sum'] * df_merge7['TotalAnnualMaxCapacity'] * df_merge7['AvailabilityFactor'] * df_merge7['CapacityToActivityUnit'] < df_merge7['TotalTechnologyAnnualActivityLowerLimit'])
             ]
             if not df_check7.empty:
-                print("CHECK 7: Error")
-                print(df_check7)
+                logger.warning("CHECK 7: Error")
+                logger.warning(df_check7.to_string())
                 msg+="<i class='fa fa-exclamation-triangle danger' aria-hidden='true'></i>CHECK 7: Error\n"
                 msg+=df_check7.to_string()
                 msg+="\n\n"
             else:
-                print("CHECK 7: Success")
+                logger.info("CHECK 7: Success")
                 msg+="<i class='fa fa-check-square-o success' aria-hidden='true'></i>CHECK 7: Success\n\n"
 
             ########################################################################################### C H E C K 8
-            print("CHECK 8. Checking if TotalTechnologyModelPeriodActivityUpperLimit is less than accumulative TotalTechnologyAnnualActivityLowerLimit for (r, t)")
+            logger.info("CHECK 8. Checking if TotalTechnologyModelPeriodActivityUpperLimit is less than accumulative TotalTechnologyAnnualActivityLowerLimit for (r, t)")
             msg+="CHECK 8. Checking if TotalTechnologyModelPeriodActivityUpperLimit is less than accumulative TotalTechnologyAnnualActivityLowerLimit for (r, t)\n"
             df_check8 = df_merge8[
                 (df_merge8['TotalTechnologyModelPeriodActivityUpperLimit'] != -1) &
                 (df_merge8['TotalTechnologyModelPeriodActivityUpperLimit'] < df_merge8['Sum_TotalTechnologyAnnualActivityLowerLimit'])
             ]
             if not df_check8.empty:
-                print("CHECK 8: Error")
-                print(df_check8)
+                logger.warning("CHECK 8: Error")
+                logger.warning(df_check8.to_string())
                 msg+="<i class='fa fa-exclamation-triangle danger' aria-hidden='true'></i>CHECK 8: Error\n"
                 msg+=df_check8.to_string()
                 msg+="\n\n"
             else:
-                print("CHECK 8: Success")
+                logger.info("CHECK 8: Success")
                 msg+="<i class='fa fa-check-square-o success' aria-hidden='true'></i>CHECK 8: Success\n\n"
 
             ########################################################################################### C H E C K 9
-            print("CHECK 9. Checking if Specified Demand Profile sums to 1 for (f, y)")
+            logger.info("CHECK 9. Checking if Specified Demand Profile sums to 1 for (f, y)")
             msg+="CHECK 9. Checking if Specified Demand Profile sums to 1 for (f, y)\n"
             df_SDP = df_SDP.groupby(['r','f','y'])['SpecifiedDemandProfile'].sum().reset_index()
             df_check9 = df_SDP[(df_SDP["SpecifiedDemandProfile"] > 1.001) | (df_SDP["SpecifiedDemandProfile"] < 0.999)]
 
             if not df_check9.empty:
-                print("CHECK 9: Error")
-                print(df_check9)
+                logger.warning("CHECK 9: Error")
+                logger.warning(df_check9.to_string())
                 msg+="<i class='fa fa-exclamation-triangle danger' aria-hidden='true'></i>CHECK 9: Error\n"
                 msg+=df_check9.to_string()
                 msg+="\n\n"
             else:
-                print("CHECK 9: Success")
+                logger.info("CHECK 9: Success")
                 msg+="<i class='fa fa-check-square-o success' aria-hidden='true'></i>CHECK 9: Success\n\n"
 
             ########################################################################################### C H E C K 10
-            print("CHECK 10. Checking if ResidualCapacity plus cumulative TotalAnnualMinCapacityInvestment is greater than TotalAnnualMaxCapacity for (r, t, y)")
+            logger.info("CHECK 10. Checking if ResidualCapacity plus cumulative TotalAnnualMinCapacityInvestment is greater than TotalAnnualMaxCapacity for (r, t, y)")
             msg+="CHECK 10. Checking if ResidualCapacity plus cumulative TotalAnnualMinCapacityInvestment is greater than TotalAnnualMaxCapacity for (r, t, y)\n"
             df_merge101 = df_TAMinCI.merge(df_RC, on=['r','t','y'],  how='outer')
             df_merge101['TotalAnnualMinCapacityInvestment'] = df_merge101['TotalAnnualMinCapacityInvestment'].fillna(value=0)
@@ -1616,13 +1620,13 @@ class DataFile(Osemosys):
                 (df_merge10['TotalAnnualMaxCapacity'] < df_merge10['Sum'] + df_merge10['ResidualCapacity'])
             ]
             if not df_check10.empty:
-                print("CHECK 10: Error")
-                print(df_check10)
+                logger.warning("CHECK 10: Error")
+                logger.warning(df_check10.to_string())
                 msg+="<i class='fa fa-exclamation-triangle danger' aria-hidden='true'></i>CHECK 10: Error\n"
                 msg+=df_check10.to_string()
                 msg+="\n\n"
             else:
-                print("CHECK 10: Success")
+                logger.info("CHECK 10: Success")
                 msg+="<i class='fa fa-check-square-o success' aria-hidden='true'></i>CHECK 10: Success\n\n"
 
             #print('msg \n', msg)
@@ -1980,9 +1984,7 @@ class DataFile(Osemosys):
                 file_out.write('end;')
 
         except Exception as err:
-            print(f"Unexpected error: {err}")
-            print("An error occurred:")
-            traceback.print_exc()  # Prints full traceback
+            logger.exception("Unexpected error during data preprocessing: %s", err)
 
     def batchRun(self, solver, cases):
         try:
@@ -2149,7 +2151,7 @@ class DataFile(Osemosys):
                     )
 
                 self.preprocessData(self.dataFile, self.dataFile_processed)
-                print("PREPROCESSING DONE! --- %s seconds --- %s" % (time.time() - start_time, caserunname))
+                logger.info("PREPROCESSING DONE! --- %s seconds --- %s", time.time() - start_time, caserunname)
                 txtOut = txtOut + ("Preprocessing time {:0.2f}s;{}".format(time.time() - start_time, '\n'))
 
                 #return output to variable preprocessed data file
@@ -2167,7 +2169,7 @@ class DataFile(Osemosys):
                 #original data file without preprocessing
                 #glpk_out = subprocess.run('glpsol --check -m ' + modelfile_original +' -d ' + datafile +' --wlp ' + lpfile, cwd=glpfolder,  capture_output=True, text=True, shell=True)
                 
-                print("CREATINON OF LP FILE DONE! --- %s seconds --- %s" % (time.time() - start_time, caserunname))
+                logger.info("CREATION OF LP FILE DONE! --- %s seconds --- %s", time.time() - start_time, caserunname)
                 txtOut = txtOut + ("Creation of LP file time {:0.2f}s;{}".format(time.time() - start_time, '\n'))
 
 
@@ -2190,7 +2192,7 @@ class DataFile(Osemosys):
                     text=True,
                 )
                 # -printing all prints all constraints to result.txt
-                print("SOLUTION DONE! --- %s seconds --- %s" % (time.time() - start_time, caserunname))
+                logger.info("SOLUTION DONE! --- %s seconds --- %s", time.time() - start_time, caserunname)
                 txtOut = txtOut + ("Solution time {:0.2f}s;{}".format(time.time() - start_time, '\n'))
                 ####output to lg file .log i .txt with errors
                 # out = subprocess.run('cbc ' + lpfile +' solve -solu '  + resultfile +'>'+ logfile, cwd=cbcfolder,  capture_output=True, text=True, shell=True)
@@ -2235,14 +2237,14 @@ class DataFile(Osemosys):
 
                 if statusFlag == "success":
                     self.generateCSVfromCBC(self.dataFile, self.resFile, self.resPath)
-                    print("CSV DONE! --- %s seconds --- %s" % (time.time() - start_time, caserunname))
+                    logger.info("CSV DONE! --- %s seconds --- %s", time.time() - start_time, caserunname)
                     txtOut = txtOut + ("csv files extraction time {:0.2f} s;{}".format(time.time() - start_time, '\n'))
                     self.generateResultsViewer(caserunname)
-                    print("PIVOT TABLE DONE! --- %s seconds --- %s" % (time.time() - start_time, caserunname))
+                    logger.info("PIVOT TABLE DONE! --- %s seconds --- %s", time.time() - start_time, caserunname)
                     txtOut = txtOut + ("Pivot data preparation time {:0.2f}s;{}".format(time.time() - start_time, '\n'))
 
 
-                print("MESSAGES DONE! --- %s seconds --- %s" % (time.time() - start_time, caserunname))
+                logger.info("MESSAGES DONE! --- %s seconds --- %s", time.time() - start_time, caserunname)
                 txtOut = txtOut + ("Message preparation time {:0.2f}s;{}".format(time.time() - start_time, '\n'))
 
                 response = {
@@ -2263,7 +2265,7 @@ class DataFile(Osemosys):
             # urllib.request.urlretrieve(self.dataFile, dataFile)
 
         except Exception as ex:
-            print(ex) # do whatever you want for debugging.
+            logger.exception("Unhandled exception in run(): %s", ex)
             raise    # re-raise exception.
         except(IOError, IndexError):
             raise IndexError
@@ -2533,7 +2535,7 @@ class DataFile(Osemosys):
                     df_ACI = df_ACI[df_ACI['AnnualizedInvestmentCost']!=0]
                     df_ACI.to_csv(os.path.join(base_folder, 'csv', 'AnnualizedInvestmentCost.csv'), index=None)
         except Exception as ex:
-            print(ex) # do whatever you want for debugging.
+            logger.exception("Unhandled exception in generateCSVfromCBC(): %s", ex)
             raise    # re-raise exception.
         except(IOError, IndexError):
             raise IndexError
