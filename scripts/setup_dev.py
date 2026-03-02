@@ -28,6 +28,7 @@ import hashlib
 import json
 import os
 import platform
+import secrets
 import shutil
 import subprocess
 import sys
@@ -43,6 +44,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 VENV_DIR = (Path.home() / ".venvs" / "muiogo").resolve()
 REQUIREMENTS = PROJECT_ROOT / "requirements.txt"
+ENV_FILE = PROJECT_ROOT / ".env"
 SYSTEM = platform.system()  # 'Darwin', 'Linux', 'Windows'
 MIN_PYTHON = (3, 10)
 MAX_PYTHON = (3, 13)  # exclusive
@@ -121,6 +123,43 @@ def _python_supported(version: tuple[int, int]) -> bool:
 
 def _requirements_hash_file() -> Path:
     return VENV_DIR / ".requirements.sha256"
+
+
+def _ensure_secret_key_in_env() -> bool:
+    """Create a persistent MUIOGO secret key in .env if one does not exist."""
+    _print_header("Step 2a: App secret key")
+
+    lines: list[str] = []
+    if ENV_FILE.exists():
+        try:
+            lines = ENV_FILE.read_text(encoding="utf-8").splitlines()
+        except Exception as exc:
+            _print_fail("Could not read .env file", str(exc))
+            return False
+
+    for raw_line in lines:
+        line = raw_line.strip()
+        if line.startswith("MUIOGO_SECRET_KEY="):
+            _print_pass("MUIOGO_SECRET_KEY already configured", str(ENV_FILE))
+            return True
+
+    existing_key = os.environ.get("MUIOGO_SECRET_KEY", "").strip()
+    new_key = existing_key or secrets.token_hex(32)
+    if lines and lines[-1] != "":
+        lines.append("")
+    lines.append(f"MUIOGO_SECRET_KEY={new_key}")
+
+    try:
+        ENV_FILE.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    except Exception as exc:
+        _print_fail("Could not write .env file", str(exc))
+        return False
+
+    if existing_key:
+        _print_pass("Persisted existing MUIOGO_SECRET_KEY to .env", str(ENV_FILE))
+    else:
+        _print_pass("Created persistent MUIOGO_SECRET_KEY", str(ENV_FILE))
+    return True
 
 
 def _resolve_venv_dir(venv_dir_arg: str | None) -> Path:
@@ -819,6 +858,8 @@ def main() -> int:
     else:
         results["Python dependencies"] = (False, "skipped because venv setup failed")
         _print_fail("Skipping Python deps (venv setup failed)")
+
+    results["App secret key"] = (_ensure_secret_key_in_env(), str(ENV_FILE))
 
     results["Solver dependencies (GLPK & CBC)"] = (install_solvers(), "")
 
