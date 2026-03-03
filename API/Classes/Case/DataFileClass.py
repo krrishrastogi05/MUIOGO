@@ -82,6 +82,7 @@ class DataFile(Osemosys):
         r = self.R(File.readFile(self.rPath))
         for id, param in self.PARAM['R'].items():
             self.f.write('{} {} {} {} {} {}'.format('param', param,'default', self.defaultValue[id], ':=','\n'))
+            tmp = self.defaultValue[id]
             for sc in self.scOrder:
                 if r[id][sc['ScId']]['value'] is not None and sc['Active'] == True:
                     tmp = r[id][sc['ScId']]['value']
@@ -107,6 +108,7 @@ class DataFile(Osemosys):
             self.f.write('{}{}{}'.format(self.years, ':=', '\n'))
             ryString = ''
             for yearId in self.yearIDs:
+                tmp = self.defaultValue[id]
                 for sc in self.scOrder:
                     if ry[id][sc['ScId']][yearId] is not None and sc['Active'] == True:
                         tmp = ry[id][sc['ScId']][yearId]
@@ -121,6 +123,7 @@ class DataFile(Osemosys):
             self.f.write('{}{}{}'.format(self.techs, ':=', '\n'))
             rtString = ''
             for techId in self.techIDs:
+                tmp = self.defaultValue[id]
                 for sc in self.scOrder:
                     if rt[id][sc['ScId']][techId] is not None and sc['Active'] == True:
                         tmp = rt[id][sc['ScId']][techId]
@@ -135,6 +138,7 @@ class DataFile(Osemosys):
             self.f.write('{}{}{}'.format(self.emis, ':=', '\n'))
             reString = ''
             for emiId in self.emiIDs:
+                tmp = self.defaultValue[id]
                 for sc in self.scOrder:
                     if re[id][sc['ScId']][emiId] is not None and sc['Active'] == True:
                         tmp = re[id][sc['ScId']][emiId]
@@ -149,6 +153,7 @@ class DataFile(Osemosys):
             self.f.write('{}{}{}'.format(self.stgs, ':=', '\n'))
             rsString = ''
             for stgId in self.stgIDs:
+                tmp = self.defaultValue[id]
                 for sc in self.scOrder:
                     if re[id][sc['ScId']][stgId] is not None and sc['Active'] == True:
                         tmp = re[id][sc['ScId']][stgId]
