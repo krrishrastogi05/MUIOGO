@@ -769,9 +769,9 @@ class DataFile(Osemosys):
                 #dznamicaly call function depending on defined params
                 for group, array in self.PARAM.items():
                     if array:
-                        func_name = Config.GEN_F[group]
-                        func = getattr(self,func_name) 
-                        func() 
+                        func_name = f"gen_{group}"
+                        func = getattr(self, func_name)
+                        func()
 
                 self.f.write('{}{}'.format('#', '\n'))
                 self.f.write('{}'.format('end;'))
