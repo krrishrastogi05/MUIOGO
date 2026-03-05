@@ -172,22 +172,34 @@ def downloadDataFile():
         #path = "/Examples.pdf"
         case = session.get('osycase', None)
         caserunname = request.args.get('caserunname')
+
+        if not case or not caserunname:
+            return jsonify({'message': 'Missing session or parameters.', 'status_code': 'error'}), 400
+
         dataFile = Path(Config.DATA_STORAGE,case, 'res',caserunname, 'data.txt')
         return send_file(dataFile.resolve(), as_attachment=True, max_age=0)
     
     except(IOError):
         return jsonify('No existing cases!'), 404
+    except TypeError:
+        return jsonify({'message': 'Invalid path parameters.', 'status_code': 'error'}), 400
 
 @datafile_api.route("/downloadFile", methods=['GET'])
 def downloadFile():
     try:
         case = session.get('osycase', None)
         file = request.args.get('file')
+
+        if not case or not file:
+            return jsonify({'message': 'Missing session or parameters.', 'status_code': 'error'}), 400
+
         dataFile = Path(Config.DATA_STORAGE,case,'res','csv',file)
         return send_file(dataFile.resolve(), as_attachment=True, max_age=0)
     
     except(IOError):
         return jsonify('No existing cases!'), 404
+    except TypeError:
+        return jsonify({'message': 'Invalid path parameters.', 'status_code': 'error'}), 400
 
 @datafile_api.route("/downloadCSVFile", methods=['GET'])
 def downloadCSVFile():
@@ -195,22 +207,34 @@ def downloadCSVFile():
         case = session.get('osycase', None)
         file = request.args.get('file')
         caserunname = request.args.get('caserunname')
+
+        if not case or not file or not caserunname:
+            return jsonify({'message': 'Missing session or parameters.', 'status_code': 'error'}), 400
+
         dataFile = Path(Config.DATA_STORAGE,case,'res',caserunname,'csv',file)
         return send_file(dataFile.resolve(), as_attachment=True, max_age=0)
     
     except(IOError):
         return jsonify('No existing cases!'), 404
+    except TypeError:
+        return jsonify({'message': 'Invalid path parameters.', 'status_code': 'error'}), 400
 
 @datafile_api.route("/downloadResultsFile", methods=['GET'])
 def downloadResultsFile():
     try:
         case = session.get('osycase', None)
         caserunname = request.args.get('caserunname')
+
+        if not case or not caserunname:
+            return jsonify({'message': 'Missing session or parameters.', 'status_code': 'error'}), 400
+
         dataFile = Path(Config.DATA_STORAGE,case, 'res', caserunname,'results.txt')
         return send_file(dataFile.resolve(), as_attachment=True, max_age=0)
     
     except(IOError):
         return jsonify('No existing cases!'), 404
+    except TypeError:
+        return jsonify({'message': 'Invalid path parameters.', 'status_code': 'error'}), 400
 
 @datafile_api.route("/run", methods=['POST'])
 def run():
