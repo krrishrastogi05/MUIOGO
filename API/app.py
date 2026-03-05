@@ -114,10 +114,18 @@ def getSession():
 @app.route("/setSession", methods=['POST'])
 def setSession():
     try:
-        cs = request.json['case']
+        data = request.get_json(silent=True)
+        if data is None:
+            return jsonify({'message': 'Invalid JSON payload.', 'status_code': 'error'}), 400
+            
+        cs = data['case']
+        
         if cs is None:
             session.pop('osycase', None)
             return jsonify({"osycase": None}), 200
+
+        if not str(cs).strip():
+            return jsonify({'message': 'Case name cannot be empty.', 'status_code': 'error'}), 400
 
         from pathlib import Path
         if not Path(Config.DATA_STORAGE, cs).is_dir():
@@ -127,7 +135,6 @@ def setSession():
         return jsonify(response), 200
     except KeyError:
         return jsonify('No selected parameters!'), 404
-
 
 if __name__ == '__main__':
 # if __name__ == 'app':
