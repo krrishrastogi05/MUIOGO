@@ -25,42 +25,42 @@ export class Html {
                         <tr>
                             <td>
                                 <b>
-                                    <span class="selectCS"  data-ps="${value}" data-toggle="tooltip" data-placement="top" title="Select model">
-                                        <span class="glyphicon 
-                                            ${selectedCS == value ? ` glyphicon-check danger ` : ` glyphicon-bookmark osy-green `}  icon-btn">
+                                    <span class="selectCS" role="button" tabindex="0" data-ps="${value}" data-toggle="tooltip" data-placement="top" title="Select model" aria-label="Select model ${value}">
+                                        <span class="glyphicon
+                                            ${selectedCS == value ? ` glyphicon-check danger ` : ` glyphicon-bookmark osy-green `} icon-btn" aria-hidden="true">
                                         </span>
                                         <span class="pointer">${value}</span>
                                     </span>
                                 </b>
                             </td>
                             <td style="width:40px; text-align:center">
-                                <span data-toggle="modal" data-target="#modaldescriptionps">
+                                <span role="button" tabindex="0" data-toggle="modal" data-target="#modaldescriptionps" aria-label="View description for ${value}">
                                     <span class="descriptionPS" data-ps="${value}" data-toggle="tooltip" data-placement="top" title="Model description">
-                                        <span class="glyphicon glyphicon-info-sign text-info icon-btn"></span>
+                                        <span class="glyphicon glyphicon-info-sign text-info icon-btn" aria-hidden="true"></span>
                                     </span>
                                 </span>
                             </td>
                             <td style="width:40px; text-align:center">
-                                <span class="editPS " data-ps="${value}" data-toggle="tooltip" data-placement="top" title="Configure model">
-                                    <span class="glyphicon glyphicon-edit text-info icon-btn"></span>
+                                <span class="editPS" role="button" tabindex="0" data-ps="${value}" data-toggle="tooltip" data-placement="top" title="Configure model" aria-label="Configure model ${value}">
+                                    <span class="glyphicon glyphicon-edit text-info icon-btn" aria-hidden="true"></span>
                                 </span>
                             </td>
                             <td style="width:40px; text-align:center">
-                                <span class="backupCS" data-ps="${value}" data-toggle="tooltip" data-placement="top" title="Backup model" >
-                                    <a href="backupCase?case=${value}"> <span class="glyphicon glyphicon-download-alt text-info icon-btn"></span></a>
+                                <span class="backupCS" data-ps="${value}" data-toggle="tooltip" data-placement="top" title="Backup model">
+                                    <a href="backupCase?case=${value}" aria-label="Backup model ${value}"><span class="glyphicon glyphicon-download-alt text-info icon-btn" aria-hidden="true"></span></a>
                                 </span>
                             </td>
                             <td style="width:40px; text-align:center">
-                                <span data-toggle="modal" data-target="#modalcopy">
-                                    <span class="copyCS" data-ps="${value}"' + 'id="copy_${value}"  data-toggle="tooltip" data-placement="top" title="Copy model" >
-                                        <span class="glyphicon glyphicon-duplicate text-info icon-btn"></span>
+                                <span role="button" tabindex="0" data-toggle="modal" data-target="#modalcopy" aria-label="Copy model ${value}">
+                                    <span class="copyCS" data-ps="${value}" id="copy_${value}" data-toggle="tooltip" data-placement="top" title="Copy model">
+                                        <span class="glyphicon glyphicon-duplicate text-info icon-btn" aria-hidden="true"></span>
                                     </span>
                                 </span>
                             </td>
                             <td style="width:40px; text-align:center">
                                 <span>
-                                    <span class="deleteModel" data-ps="${value}"'+'data-toggle="tooltip" data-placement="top" title="Delete model">
-                                        <span  class="glyphicon glyphicon-trash danger icon-btn"></span>
+                                    <span class="deleteModel" role="button" tabindex="0" data-ps="${value}" data-toggle="tooltip" data-placement="top" title="Delete model" aria-label="Delete model ${value}">
+                                        <span class="glyphicon glyphicon-trash danger icon-btn" aria-hidden="true"></span>
                                     </span>
                                 </span>
                             </td>

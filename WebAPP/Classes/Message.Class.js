@@ -15,67 +15,67 @@ export class Message {
     }
 
     static warning(message) {
-        $("#osy-warning").html(`<div class="alert alert-warning fade in">
-                                        <button class="close" data-dismiss="alert">×</button>
-                                        <i class="fa-fw fa fa-warning"></i>
+        $("#osy-warning").html(`<div class="alert alert-warning fade in" role="alert">
+                                        <button class="close" data-dismiss="alert" aria-label="Close">×</button>
+                                        <i class="fa-fw fa fa-warning" aria-hidden="true"></i>
                                         <strong>Warning!</strong> `+ message + `
                                     </div>`);
     }
 
     static success(message) {
-        $("#osy-success").html(`<div class="alert alert-success fade in">
-                                        <button class="close" data-dismiss="alert">×</button>
-                                        <i class="fa-fw fa fa-check"></i>
+        $("#osy-success").html(`<div class="alert alert-success fade in" role="status">
+                                        <button class="close" data-dismiss="alert" aria-label="Close">×</button>
+                                        <i class="fa-fw fa fa-check" aria-hidden="true"></i>
                                         <strong>Success!</strong> `+ message + `
                                     </div>`);
     }
 
     static info(message) {
-        $("#osy-info").html(`<div class="alert alert-info fade in">
-                                        <button class="close" data-dismiss="alert">×</button>
-                                        <i class="fa-fw fa fa-info"></i>
+        $("#osy-info").html(`<div class="alert alert-info fade in" role="status">
+                                        <button class="close" data-dismiss="alert" aria-label="Close">×</button>
+                                        <i class="fa-fw fa fa-info" aria-hidden="true"></i>
                                         <strong>Info!</strong> `+ message + `
                                     </div>`);
     }
 
     static danger(message) {
-        $("#osy-danger").html(`<div class="alert alert-danger fade in">
-                                        <button class="close" data-dismiss="alert">×</button>
-                                        <i class="fa-fw fa fa-times"></i>
+        $("#osy-danger").html(`<div class="alert alert-danger fade in" role="alert">
+                                        <button class="close" data-dismiss="alert" aria-label="Close">×</button>
+                                        <i class="fa-fw fa fa-times" aria-hidden="true"></i>
                                         <strong>Error!</strong> `+ message + `
                                     </div>`);
     }
 
     static warningOsy(message) {
         $("#osy-warning-transparent").html(`
-                                    <div class="alert alert-warning-osy fade in">
-                                        <button class="close" data-dismiss="alert">×</button>
-                                        <i class="fa-fw fa fa-warning fa-2x warning"></i>
+                                    <div class="alert alert-warning-osy fade in" role="alert">
+                                        <button class="close" data-dismiss="alert" aria-label="Close">×</button>
+                                        <i class="fa-fw fa fa-warning fa-2x warning" aria-hidden="true"></i>
                                         <strong>Warning!</strong> <i style="color:grey">`+ message + `</i>
                                     </div>`);
     }
 
     static successOsy(message) {
         $("#osy-success-transparent").html(`
-                                    <div class="alert alert-success-osy fade in">
-                                        <button class="close" data-dismiss="alert">×</button>
-                                        <i class="fa-fw fa fa-check fa-2x success"></i>
+                                    <div class="alert alert-success-osy fade in" role="status">
+                                        <button class="close" data-dismiss="alert" aria-label="Close">×</button>
+                                        <i class="fa-fw fa fa-check fa-2x success" aria-hidden="true"></i>
                                         <strong>Success!</strong><i style="color:grey">`+ message + `</i>
                                     </div>`);
     }
 
     static infoOsy(message) {
-        $("#osy-info-transparent").html(`<div class="alert alert-info-osy fade in">
-                                        <button class="close" data-dismiss="alert">×</button>
-                                        <i class="fa-fw fa fa-info fa-2x info"></i>
+        $("#osy-info-transparent").html(`<div class="alert alert-info-osy fade in" role="status">
+                                        <button class="close" data-dismiss="alert" aria-label="Close">×</button>
+                                        <i class="fa-fw fa fa-info fa-2x info" aria-hidden="true"></i>
                                         <strong>Info!</strong> <i style="color:grey">`+ message + `</i>
                                     </div>`);
     }
 
     static dangerOsy(message) {
-        $("#osy-danger-transparent").html(`<div class="alert alert-danger-osy fade in">
-                                        <button class="close" data-dismiss="alert">×</button>
-                                        <i class="fa-fw fa fa-exclamation-triangle fa-2x danger"></i>
+        $("#osy-danger-transparent").html(`<div class="alert alert-danger-osy fade in" role="alert">
+                                        <button class="close" data-dismiss="alert" aria-label="Close">×</button>
+                                        <i class="fa-fw fa fa-exclamation-triangle fa-2x danger" aria-hidden="true"></i>
                                         <strong>Error!</strong> <i style="color:grey">`+ message + `</i>
                                     </div>`);
     }
@@ -262,8 +262,8 @@ export class Message {
 
     static resMessage(message) {
         $("#res-message").html(
-            `<div class="alert alert-osy-second-color fade in">
-                <button class="close" data-dismiss="alert">×</button>
+            `<div class="alert alert-osy-second-color fade in" role="status">
+                <button class="close" data-dismiss="alert" aria-label="Close">×</button>
                  <i style="color:grey">`+ message + `
             </div>`);
     }

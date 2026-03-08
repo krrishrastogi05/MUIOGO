@@ -47,10 +47,10 @@
         data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false"
         data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-sortable="false">
         <header>
-          <h2> <i id="icon" class="fa fa-cubes fa-lg osy-second-color"></i> MUIO models</h2>
+          <h2 id="muio-models-title"> <i class="fa fa-cubes fa-lg osy-second-color" aria-hidden="true"></i> MUIO models</h2>
           <div class="widget-toolbar pull-right">
-            <div  class="btn btn-white" id="showLog" data-toggle="tooltip" data-placement="top" title="Introduction to OSeMOSYS">
-              <i class="fa fa-question-circle fa-lg warning "></i>
+            <div class="btn btn-white" id="showLog" data-toggle="tooltip" data-placement="top" title="Introduction to OSeMOSYS" aria-label="Introduction to OSeMOSYS">
+              <i class="fa fa-question-circle fa-lg warning" aria-hidden="true"></i>
             </div>
             <!-- <button type="button" class="btn btn-default" id="showLog" data-toggle="tooltip" data-placement="top"
                 title="Parameters definitions">
@@ -59,19 +59,19 @@
             <span class="dropdown-menu dropdown-menu-extra-wide" id="definition" style="color:#000"></span>
           </div>
           <div class="widget-toolbar smart-form">
-            <label class="input">
-              <input type="text" placeholder="Search ..." class="nav-search-input" id="CaseSearch" />
-              <i class="ace-icon fa fa-search nav-search-icon"></i>
+            <label class="input" for="CaseSearch">
+              <span class="sr-only">Search models</span>
+              <input type="text" placeholder="Search ..." class="nav-search-input" id="CaseSearch" aria-label="Search models" />
+              <i class="ace-icon fa fa-search nav-search-icon" aria-hidden="true"></i>
             </label>
           </div>
           <div class="widget-toolbar">
-            <div class="btn btn-default" data-toggle="modal" data-target="#modalrestore" id="restoreCS" title="Restore model">
-              <i class="fa fa-cloud-upload fa-lg fa-1.5x  osy"></i>
+            <div class="btn btn-default" data-toggle="modal" data-target="#modalrestore" id="restoreCS" title="Restore model" aria-label="Restore model">
+              <i class="fa fa-cloud-upload fa-lg fa-1.5x osy" aria-hidden="true"></i>
             </div>
-            <a class="btn btn-default " href="#LegacyImport" data-toggle="tooltip" data-placement="top" title="Import model">
-              <i class="fa fa-upload fa-lg fa-1.5x  osy"></i>
-              
-            </a> 
+            <a class="btn btn-default" href="#LegacyImport" data-toggle="tooltip" data-placement="top" title="Import model" aria-label="Import model">
+              <i class="fa fa-upload fa-lg fa-1.5x osy" aria-hidden="true"></i>
+            </a>
           </div>
 
         </header>
@@ -93,11 +93,11 @@
   </div>
 </div>
 
-<div id="modaldescriptionps" class="modal fade" role="dialog">
+<div id="modaldescriptionps" class="modal fade" role="dialog" aria-labelledby="mtitleps_desc" aria-modal="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
         <h4 class="modal-title" lang="en" data-lang-token="description" id="mtitleps_desc"></h4>
       </div>
       <div class="modal-body">
@@ -110,12 +110,12 @@
 
 
 <!--Modal restore cs -->
-<div id="modalrestore" class="modal fade" role="dialog">
+<div id="modalrestore" class="modal fade" role="dialog" aria-labelledby="modalrestore-title" aria-modal="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Restore model</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+        <h4 class="modal-title" id="modalrestore-title">Restore model</h4>
       </div>
       <div class="modal-body">
         <!-- <form action="http://127.0.0.1:5000/upload" class="dropzone" id="myDropzone"></form> -->
