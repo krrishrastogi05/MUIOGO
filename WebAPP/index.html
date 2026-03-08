@@ -86,7 +86,8 @@
 	</head>
 
 	<body class=" minified smart-style-4  fixed-header ">
-		<div id="loadermain" style="display: none;">
+		<a href="#content" class="sr-only sr-only-focusable">Skip to main content</a>
+		<div id="loadermain" style="display: none;" role="status" aria-live="polite" aria-label="Loading">
             <div class="loader "></div>
 			<h4></h4>
 		</div>
@@ -101,17 +102,17 @@
 		<aside id="left-panel"></aside>
 		
 		<!-- #MAIN PANEL -->
-		<div id="main" role="main">	
-			<div id="osy-danger"></div>	
-			<div id="osy-warning"></div>	
-			<div id="osy-info"></div>	
-			<div id="osy-success"></div>	
+		<div id="main" role="main">
+			<div id="osy-danger"              role="alert"  aria-live="assertive" aria-atomic="true"></div>
+			<div id="osy-warning"             role="alert"  aria-live="polite"    aria-atomic="true"></div>
+			<div id="osy-info"                role="status" aria-live="polite"    aria-atomic="true"></div>
+			<div id="osy-success"             role="status" aria-live="polite"    aria-atomic="true"></div>
 
-			<div id="osy-danger-transparent"></div>	
-			<div id="osy-warning-transparent"></div>	
-			<div id="osy-info-transparent"></div>	
-			<div id="osy-success-transparent"></div>
-			<div id="osy-default-transparent"></div>
+			<div id="osy-danger-transparent"  role="alert"  aria-live="assertive" aria-atomic="true"></div>
+			<div id="osy-warning-transparent" role="alert"  aria-live="polite"    aria-atomic="true"></div>
+			<div id="osy-info-transparent"    role="status" aria-live="polite"    aria-atomic="true"></div>
+			<div id="osy-success-transparent" role="status" aria-live="polite"    aria-atomic="true"></div>
+			<div id="osy-default-transparent" role="status" aria-live="polite"    aria-atomic="true"></div>
 					
 			<div class="osy-content pace-done" id="content"></div>
 
