@@ -39,7 +39,7 @@ At the moment, this repository starts from a direct copy baseline of MUIO. The g
 - GLPK and CBC solvers:
   - Installed automatically by setup scripts (`./scripts/setup.sh` or `scripts\\setup.bat`)
 
-## Quick Start
+## Installation
 
 ### macOS / Linux (in Terminal)
 
@@ -58,6 +58,23 @@ scripts\start.bat
 For setup options, use the "--help" flag:
 - macOS / Linux: `./scripts/setup.sh --help`
 - Windows: `scripts\setup.bat --help`
+
+### Advanced: manual dependency install
+
+If you need to install Python dependencies without the setup scripts:
+
+```bash
+# All platforms — runtime
+pip install -r requirements.txt
+```
+
+```bash
+# Windows packaging dependencies (PyInstaller build only)
+pip install -r requirements-build-win.txt
+```
+
+> **Note:** The setup scripts handle more than Python packages (venv creation,
+> solver installation, demo data). Using them is the recommended onboarding path.
 
 ## Demo Data
 
