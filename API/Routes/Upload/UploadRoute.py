@@ -12,6 +12,14 @@ from Classes.Base.FileClass import File
 
 upload_api = Blueprint('UploadRoute', __name__)
 
+def safe_extractall(zf, extract_to):
+    extract_to = Path(extract_to).resolve()
+    for member in zf.infolist():
+        member_path = (extract_to / member.filename).resolve()
+        if not str(member_path).startswith(str(extract_to)):
+            raise PermissionError(f"Invalid path in ZIP: {member.filename}")
+        zf.extract(member, extract_to)
+
 #File extension checking
 def allowed_filename(filename):
     return '.' in filename and filename.rsplit('.',1)[1] in Config.ALLOWED_EXTENSIONS
@@ -180,6 +188,7 @@ def updateTimeslices_OnlyTs(casename):
     RYTTsPath.write_text(RYTTsPath.read_text().replace('Timeslice', 'TsId'))
     RYCTsPath = Path(Config.DATA_STORAGE, casename, 'RYCTs.json')
     RYCTsPath.write_text(RYCTsPath.read_text().replace('Timeslice', 'TsId'))
+
 ##############################################################Multithreading example#########################3
 class Download(Thread):
     def __init__(self, request, zippedFile):
@@ -259,10 +268,6 @@ def uploadCaseUnchunked_old():
                 with ZipFile(os.path.join(Config.DATA_STORAGE, filename)) as zf:
                     errorcode = 1
                     for zippedfile in zf.namelist():
-                        # one = zippedfile
-                        # two = Path(zippedfile)
-                        # name = two.name
-                        #zipfiles.append(Path(zippedfile).name)
                         zippedfilepath = Path(zippedfile)
                         zippedfilename = zippedfilepath.name
                         casename = zippedfilepath.parent.name
@@ -275,7 +280,7 @@ def uploadCaseUnchunked_old():
                                 name = data.get('osy-version', None)
 
                                 if name == '1.0' or name == '2.0':
-                                    zf.extractall(os.path.join(Config.EXTRACT_FOLDER))
+                                    safe_extractall(zf, Config.EXTRACT_FOLDER)
 
                                     #add res view folders with json default files
                                     configPath = Path(Config.DATA_STORAGE, 'Variables.json')
@@ -322,7 +327,7 @@ def uploadCaseUnchunked_old():
                                 elif name == '3.0': 
                                     #potrebno dodati tech groups
                                     #case = data.get('osy-casename', None)
-                                    zf.extractall(os.path.join(Config.EXTRACT_FOLDER))
+                                    safe_extractall(zf, Config.EXTRACT_FOLDER)
                                     genDataPath = Path(Config.DATA_STORAGE, casename, 'genData.json')
                                     genData = File.readParamFile(genDataPath)
                                     genData["osy-techGroups"] = []
@@ -341,7 +346,7 @@ def uploadCaseUnchunked_old():
                                         "casename": casename
                                     })
                                 elif name == '4.0' or name == '4.5' or name == '4.9': 
-                                    zf.extractall(os.path.join(Config.EXTRACT_FOLDER))
+                                    safe_extractall(zf, Config.EXTRACT_FOLDER)
                                     # potrebno updatevoati YearSplit u verziji 5.0 su dinamicki
                                     #update for dynamic timeslicec
                                     updateTimeslices(casename)
@@ -356,20 +361,8 @@ def uploadCaseUnchunked_old():
                                         "casename": casename
                                     })
 
-                                # elif name == '4.9': 
-                                #     zf.extractall(os.path.join(Config.EXTRACT_FOLDER))
-                                #     # potrebno updatevoati YearSplit u verziji 5.0 su dinamicki
-                                #     #update for dynamic timeslicec
-                                #     updateTimeslices(casename)
-
-                                #     msg.append({
-                                #             "message": "Model " + casename +" have been uploaded!",
-                                #             "status_code": "success",
-                                #             "casename": casename
-                                #         })
-
                                 elif name == '5.0': 
-                                    zf.extractall(os.path.join(Config.EXTRACT_FOLDER))
+                                    safe_extractall(zf, Config.EXTRACT_FOLDER)
                                     updateViewDefintions(casename)
                                     msg.append({
                                         "message": "Model " + casename +" have been uploaded!",
@@ -424,7 +417,6 @@ def handle_full_zip(file, filepath=None):
         with ZipFile(filepath) as zf:
             errorcode = 1
 
-
             # --- Find first genData.json entry (single pass) ---
             target_info = next(
                 (zi for zi in zf.infolist() if Path(zi.filename).name == "genData.json"),
@@ -439,8 +431,6 @@ def handle_full_zip(file, filepath=None):
                 })
                 return jsonify({"response": msg}), 200
 
-            #for zippedfile in zf.namelist():
-
             zippedfilepath = Path(target_info.filename)
             zippedfilename = zippedfilepath.name
             casename = zippedfilepath.parent.name
@@ -453,7 +443,7 @@ def handle_full_zip(file, filepath=None):
                     #     TVOJA ORIGINALNA LOGIKA
                     # ---------------------------
                     if name == '1.0' or name == '2.0':
-                        zf.extractall(os.path.join(Config.EXTRACT_FOLDER))
+                        safe_extractall(zf, Config.EXTRACT_FOLDER)
                         configPath = Path(Config.DATA_STORAGE, 'Variables.json')
                         vars = File.readParamFile(configPath)
                         viewDef = {}
@@ -482,7 +472,7 @@ def handle_full_zip(file, filepath=None):
                             "casename": casename
                         })
                     elif name == '3.0':
-                        zf.extractall(os.path.join(Config.EXTRACT_FOLDER))
+                        safe_extractall(zf, Config.EXTRACT_FOLDER)
                         genDataPath = Path(Config.DATA_STORAGE, casename, 'genData.json')
                         genData = File.readParamFile(genDataPath)
                         genData["osy-techGroups"] = []
@@ -498,7 +488,7 @@ def handle_full_zip(file, filepath=None):
                             "casename": casename
                         })
                     elif name in ['4.0', '4.5', '4.9']:
-                        zf.extractall(os.path.join(Config.EXTRACT_FOLDER))
+                        safe_extractall(zf, Config.EXTRACT_FOLDER)
                         updateTimeslices(casename)
                         updateStorageSet(casename)
                         updateViewDefintions(casename)
@@ -509,7 +499,7 @@ def handle_full_zip(file, filepath=None):
                             "casename": casename
                         })
                     elif name == '5.0':
-                        zf.extractall(os.path.join(Config.EXTRACT_FOLDER))
+                        safe_extractall(zf, Config.EXTRACT_FOLDER)
                         updateViewDefintions(casename)
                         msg.append({
                             "message": "Model " + casename +" have been uploaded!",
@@ -623,13 +613,6 @@ def uploadXls():
                 #spasiti zip u data storage
                 file.save(os.path.join(Config.DATA_STORAGE, filename))
 
-                #ako ima space u umenu rename file
-                # filename_nosapces = filename[:]
-                # filename_nosapces.replace(" ","")
-                # if( filename_nosapces != filename):
-                #     os.rename(os.path.join(Config.DATA_STORAGE, filename), os.path.join(Config.DATA_STORAGE, filename_nosapces))
-                #     filename = filename_nosapces
-        
                 msg.append({
                     "message": "Template " + submitted_file +" have been uploaded!",
                     "status_code": "success",
