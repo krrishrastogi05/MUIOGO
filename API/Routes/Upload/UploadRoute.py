@@ -16,7 +16,7 @@ def safe_extractall(zf, extract_to):
     extract_to = Path(extract_to).resolve()
     for member in zf.infolist():
         member_path = (extract_to / member.filename).resolve()
-        if not str(member_path).startswith(str(extract_to)):
+        if not str(member_path).startswith(str(extract_to) + os.sep):
             raise PermissionError(f"Invalid path in ZIP: {member.filename}")
         zf.extract(member, extract_to)
 
